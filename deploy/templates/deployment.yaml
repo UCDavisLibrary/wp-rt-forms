@@ -1,0 +1,46 @@
+version: '3'
+services:
+  wordpress:
+    image: {{APP_IMAGE_NAME}}:{{REPO_TAG}}
+    env_file:
+      - .env
+    ports:
+      - ${HOST_PORT:-8000}:80
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
+      WORDPRESS_DB_DATABASE: ${DB_DATABASE}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_SITEURL', '${SERVER_URL}' );
+        define('WP_HOME', '${SERVER_URL}' );
+        define('FORCE_SSL_ADMIN', true);
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - uploads-data:/usr/src/wordpress/wp-content/uploads
+      - wp-logs-data:{{WP_LOG_ROOT}}
+
+  db:
+    image: {{MYSQL_IMAGE_NAME}}:{{MYSQL_TAG}}
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db-data:/var/lib/mysql
+    ulimits:
+      nofile:
+        soft: 262114
+        hard: 262114
+
+volumes:
+  db-data:
+  uploads-data:
+  wp-logs-data:

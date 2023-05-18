@@ -1,0 +1,27 @@
+{
+  "name": "ucdlib/wp-rt-forms",
+  "description": "Wordpress Rt Forms",
+  "type":"wordpress-theme",
+  "license": "MIT",
+  "minimum-stability" : "dev",
+  "authors": [
+    {
+      "email": "spelkey@ucdavis.edu",
+      "name": "spelkey"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    }
+  ],
+  "require": {
+    "timber/timber": "2.0.0-beta.1"
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers":true
+    }
+  }
+}

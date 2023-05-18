@@ -1,0 +1,52 @@
+version: '3'
+services:
+  wordpress:
+    image: {{APP_IMAGE_NAME}}:{{REPO_TAG}}
+    env_file:
+      - .env
+    ports:
+      - ${HOST_PORT:-3000}:80
+    environment:
+      WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
+      WORDPRESS_DB_DATABASE: ${DB_DATABASE:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-wordpress}
+      WORDPRESS_DB_USER: ${DB_USER:-wordpress}
+      WORDPRESS_DEBUG: ${WORDPRESS_DEBUG:-1}
+      WORDPRESS_DEBUG_DISPLAY: ${WORDPRESS_DEBUG_DISPLAY:-1}
+      WORDPRESS_DISABLE_FATAL_ERROR_HANDLER: ${WORDPRESS_DISABLE_FATAL_ERROR_HANDLER:-1}
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'WP_ENVIRONMENT_TYPE', 'local' );
+      UCD_THEME_ENV: ${UCD_THEME_ENV:-dev}
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - uploads-data:/usr/src/wordpress/wp-content/uploads
+      - wp-logs-data:{{WP_LOG_ROOT}}
+      - ../{{REPOSITORY_DIR}}/{{THEME_REPO_NAME}}:{{WP_UCD_THEME_DIR}}
+
+  db:
+    image: {{MYSQL_IMAGE_NAME}}:{{MYSQL_TAG}}
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-wordpress}
+      MYSQL_DATABASE: ${DB_DATABASE:-wordpress}
+      MYSQL_USER: ${DB_USER:-wordpress}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-wordpress}
+    volumes:
+      - db-data:/var/lib/mysql
+    ulimits:
+      nofile:
+        soft: 262114
+        hard: 262114
+
+  adminer:
+    image: {{ADMINER_IMAGE_NAME}}:{{ADMINER_TAG}}
+    ports:
+      - ${ADMINER_HOST_PORT:-8080}:8080
+
+volumes:
+  db-data:
+  uploads-data:
+  wp-logs-data:

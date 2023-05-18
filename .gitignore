@@ -1,0 +1,4 @@
+.env
+deploy/repositories
+node_modules
+deploy/wp-rt-forms-local-dev
