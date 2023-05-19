@@ -24,6 +24,7 @@ REPO_TAG=main
 THEME_TAG='v3.3.0'
 WP_CORE_VERSION='6.2.1'
 FORMINATOR_VERSION='1.23.3'
+WPMU_DEV_DASHBOARD_VERSION='4.11.18'
 MYSQL_TAG=5.7
 ADMINER_TAG=4
 
@@ -108,3 +109,12 @@ WP_LOG_ROOT=/var/log/wordpress
 WP_THEME_DIR=$WP_SRC_ROOT/wp-content/themes
 WP_UCD_THEME_DIR=$WP_THEME_DIR/$THEME_REPO_NAME
 WP_PLUGIN_DIR=$WP_SRC_ROOT/wp-content/plugins
+
+# google cloud
+GC_PLUGIN_DIR=wordpress-general/plugins
+CONFIG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+if [[ -f "$CONFIG_DIR/reader-key.json" ]]; then
+  GOOGLE_KEY_FILE_CONTENT="$(cat $CONFIG_DIR/reader-key.json)"
+else
+  echo "Warning: no Google key file found. Run cmds/init-keys.sh to download the key file."
+fi

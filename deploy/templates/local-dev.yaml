@@ -21,9 +21,11 @@ services:
       - /run
       - /tmp
     volumes:
-      - uploads-data:/usr/src/wordpress/wp-content/uploads
+      - uploads-data:{{WP_SRC_ROOT}}/wp-content/uploads
       - wp-logs-data:{{WP_LOG_ROOT}}
       - ../{{REPOSITORY_DIR}}/{{THEME_REPO_NAME}}:{{WP_UCD_THEME_DIR}}
+      - ../{{REPOSITORY_DIR}}/{{FORMINATOR_RT_ADDON_REPO_NAME}}:{{WP_PLUGIN_DIR}}/{{FORMINATOR_RT_ADDON_REPO_NAME}}
+      - ../../src/plugins/ucdlib-forminator-customizations:{{WP_PLUGIN_DIR}}/ucdlib-forminator-customizations
 
   db:
     image: {{MYSQL_IMAGE_NAME}}:{{MYSQL_TAG}}
