@@ -35,6 +35,7 @@ ARG WP_LOG_ROOT=/var/log/wordpress
 ENV WP_LOG_ROOT=${WP_LOG_ROOT}
 ARG WP_THEME_DIR
 ARG WP_PLUGIN_DIR
+ARG THEME_TAG
 
 # Plugins
 ARG FORMINATOR_RT_ADDON_REPO_URL
@@ -68,7 +69,12 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 && chmod +x wp-cli.phar \
 && mv wp-cli.phar /usr/local/bin/wp
 
-# TODO: get our theme
+# get our prebuilt theme
+WORKDIR $WP_THEME_DIR
+ARG THEME_FILE="ucdlib-theme-wp-${THEME_TAG}.tar.gz"
+RUN curl -OL https://github.com/UCDavisLibrary/ucdlib-theme-wp/releases/download/${THEME_TAG}/${THEME_FILE} \
+&& tar -xzf ${THEME_FILE} \
+&& rm ${THEME_FILE}
 
 # remove default plugins and insert the plugins we want
 WORKDIR $WP_PLUGIN_DIR
