@@ -22,16 +22,32 @@ REPO_TAG=main
 
 # Dependency tags/branches
 THEME_TAG='v3.4.0'
-WP_CORE_VERSION='6.2.1'
-FORMINATOR_VERSION='1.23.3'
+WP_CORE_VERSION='6.2.2'
+FORMINATOR_VERSION='1.24.1'
+OPENID_CONNECT_GENERIC_VERSION='3.9.1'
 WPMU_DEV_DASHBOARD_VERSION='4.11.18'
 MYSQL_TAG=5.7
 ADMINER_TAG=4
 
+# Auth
+OIDC_PROVIDER_URL='https://sandbox.auth.library.ucdavis.edu/realms/internal'
+OIDC_CLIENT_ID='rt-forms-client'
+#OIDC_CLIENT_SECRET='set this in your .env file'
+OIDC_PROTOCOL_URL=$OIDC_PROVIDER_URL/protocol/openid-connect
+OIDC_ENDPOINT_LOGIN_URL=$OIDC_PROTOCOL_URL/auth
+OIDC_ENDPOINT_USERINFO_URL=$OIDC_PROTOCOL_URL/userinfo
+OIDC_ENDPOINT_TOKEN_URL=$OIDC_PROTOCOL_URL/token
+OIDC_ENDPOINT_LOGOUT_URL=$OIDC_PROTOCOL_URL/logout
+OIDC_CLIENT_SCOPE='openid profile email roles'
+OIDC_LOGIN_TYPE='auto'
+OIDC_CREATE_IF_DOES_NOT_EXIST='true'
+OIDC_LINK_EXISTING_USERS='true'
+OIDC_REDIRECT_USER_BACK='true'
+
+# Directories
 DEPLOY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 ROOT_DIR="$( cd $DEPLOY_DIR/.. && pwd )"
 SRC_DIR=$ROOT_DIR/src
-
 
 ##
 # Repositories
