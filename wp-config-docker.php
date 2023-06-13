@@ -125,6 +125,20 @@ if ($configExtra = getenv_docker('WORDPRESS_CONFIG_EXTRA', '')) {
 	eval($configExtra);
 }
 
+// settings for OIDC plugin
+define( 'OIDC_CLIENT_ID', getenv_docker('OIDC_CLIENT_ID', '') );
+define( 'OIDC_CLIENT_SECRET', getenv_docker('OIDC_CLIENT_SECRET', '') );
+define( 'OIDC_ENDPOINT_LOGIN_URL', getenv_docker('OIDC_ENDPOINT_LOGIN_URL', '') );
+define( 'OIDC_ENDPOINT_TOKEN_URL', getenv_docker('OIDC_ENDPOINT_TOKEN_URL', '') );
+define( 'OIDC_ENDPOINT_USERINFO_URL', getenv_docker('OIDC_ENDPOINT_USERINFO_URL', '') );
+define( 'OIDC_ENDPOINT_LOGOUT_URL', getenv_docker('OIDC_ENDPOINT_LOGOUT_URL', '') );
+define( 'OIDC_CLIENT_SCOPE', getenv_docker('OIDC_CLIENT_SCOPE', '') );
+define( 'OIDC_LOGIN_TYPE', getenv_docker('OIDC_LOGIN_TYPE', '') );
+define( 'OIDC_CREATE_IF_DOES_NOT_EXIST', !!getenv_docker('OIDC_CREATE_IF_DOES_NOT_EXIST', true) );
+define( 'OIDC_LINK_EXISTING_USERS', !!getenv_docker('OIDC_LINK_EXISTING_USERS', true) );
+define( 'OIDC_REDIRECT_USER_BACK', !!getenv_docker('OIDC_REDIRECT_USER_BACK', true) );
+define( 'OIDC_ENFORCE_PRIVACY', !!getenv_docker('OIDC_ENFORCE_PRIVACY', true) );
+
 /* That's all, stop editing! Happy publishing. */
 
 /** Absolute path to the WordPress directory. */

@@ -1,12 +1,12 @@
-
 # Multistage build args
 ARG WP_CORE_VERSION
 ARG FORMINATOR_VERSION
-ARG FORMINATOR_FILE="forminator-pro-${FORMINATOR_VERSION}.zip"
+ARG FORMINATOR_ZIP_FILE="forminator-pro-${FORMINATOR_VERSION}.zip"
 ARG OPENID_CONNECT_GENERIC_VERSION
-ARG OPENID_CONNECT_GENERIC_FILE="openid-connect-generic-${OPENID_CONNECT_GENERIC_VERSION}.zip"
+ARG OPENID_CONNECT_GENERIC_DIR="openid-connect-generic-${OPENID_CONNECT_GENERIC_VERSION}"
+ARG OPENID_CONNECT_GENERIC_ZIP_FILE="${OPENID_CONNECT_GENERIC_DIR}.zip"
 ARG WPMU_DEV_DASHBOARD_VERSION
-ARG WPMU_DEV_DASHBOARD_FILE="wpmu-dev-dashboard-${WPMU_DEV_DASHBOARD_VERSION}.zip"
+ARG WPMU_DEV_DASHBOARD_ZIP_FILE="wpmu-dev-dashboard-${WPMU_DEV_DASHBOARD_VERSION}.zip"
 
 # Download plugins from Google Cloud Storage
 FROM google/cloud-sdk:alpine as gcloud
@@ -14,14 +14,14 @@ RUN mkdir -p /cache
 WORKDIR /cache
 ARG GOOGLE_KEY_FILE_CONTENT
 ARG GC_PLUGIN_DIR
-ARG FORMINATOR_FILE
-ARG OPENID_CONNECT_GENERIC_FILE
-ARG WPMU_DEV_DASHBOARD_FILE
+ARG FORMINATOR_ZIP_FILE
+ARG OPENID_CONNECT_GENERIC_ZIP_FILE
+ARG WPMU_DEV_DASHBOARD_ZIP_FILE
 
 RUN echo $GOOGLE_KEY_FILE_CONTENT | gcloud auth activate-service-account --key-file=-
-RUN gsutil cp gs://${GC_PLUGIN_DIR}/forminator-pro/${FORMINATOR_FILE} . \
-&& gsutil cp gs://${GC_PLUGIN_DIR}/openid-connect-generic/${OPENID_CONNECT_GENERIC_FILE} . \
-&& gsutil cp gs://${GC_PLUGIN_DIR}/wpmudev-updates/${WPMU_DEV_DASHBOARD_FILE} .
+RUN gsutil cp gs://${GC_PLUGIN_DIR}/forminator-pro/${FORMINATOR_ZIP_FILE} . \
+&& gsutil cp gs://${GC_PLUGIN_DIR}/openid-connect-generic/${OPENID_CONNECT_GENERIC_ZIP_FILE} . \
+&& gsutil cp gs://${GC_PLUGIN_DIR}/wpmudev-updates/${WPMU_DEV_DASHBOARD_ZIP_FILE} .
 
 # Main build
 FROM wordpress:${WP_CORE_VERSION} as wordpress
@@ -43,9 +43,10 @@ ARG THEME_TAG
 
 # Plugins
 ARG FORMINATOR_RT_ADDON_REPO_URL
-ARG FORMINATOR_FILE
-ARG OPENID_CONNECT_GENERIC_FILE
-ARG WPMU_DEV_DASHBOARD_FILE
+ARG FORMINATOR_ZIP_FILE
+ARG OPENID_CONNECT_GENERIC_DIR
+ARG OPENID_CONNECT_GENERIC_ZIP_FILE
+ARG WPMU_DEV_DASHBOARD_ZIP_FILE
 
 WORKDIR $WP_SRC_ROOT
 
@@ -56,7 +57,7 @@ COPY composer.json .
 RUN composer install
 
 # Install debian packages
-RUN apt-get update && apt-get install -y unzip git
+RUN apt-get update && apt-get install -y unzip git vim
 
 # WP config
 COPY wp-config-docker.php wp-config-docker.php
@@ -81,17 +82,18 @@ RUN curl -OL https://github.com/UCDavisLibrary/ucdlib-theme-wp/releases/download
 && tar -xzf ${THEME_FILE} \
 && rm ${THEME_FILE}
 
-# remove default plugins and insert the plugins we want
+# remove default plugins and insert the plugins we downloaded from GCS
 WORKDIR $WP_PLUGIN_DIR
 RUN rm -rf */ && rm -f hello.php
 RUN git clone ${FORMINATOR_RT_ADDON_REPO_URL}.git
 COPY src/plugins .
-COPY --from=gcloud /cache/${FORMINATOR_FILE} .
-COPY --from=gcloud /cache/${OPENID_CONNECT_GENERIC_FILE} .
-COPY --from=gcloud /cache/${WPMU_DEV_DASHBOARD_FILE} .
-RUN unzip ${FORMINATOR_FILE} && rm ${FORMINATOR_FILE} \
-&& unzip ${OPENID_CONNECT_GENERIC_FILE} && rm ${OPENID_CONNECT_GENERIC_FILE} \
-&& unzip ${WPMU_DEV_DASHBOARD_FILE} && rm ${WPMU_DEV_DASHBOARD_FILE}
+COPY --from=gcloud /cache/${FORMINATOR_ZIP_FILE} .
+COPY --from=gcloud /cache/${OPENID_CONNECT_GENERIC_ZIP_FILE} .
+COPY --from=gcloud /cache/${WPMU_DEV_DASHBOARD_ZIP_FILE} .
+RUN unzip ${FORMINATOR_ZIP_FILE} && rm ${FORMINATOR_ZIP_FILE} \
+&& unzip ${OPENID_CONNECT_GENERIC_ZIP_FILE} && rm ${OPENID_CONNECT_GENERIC_ZIP_FILE} \
+&& unzip ${WPMU_DEV_DASHBOARD_ZIP_FILE} && rm ${WPMU_DEV_DASHBOARD_ZIP_FILE}
+RUN mv $OPENID_CONNECT_GENERIC_DIR openid-connect-generic
 
 # Back to site root so wordpress can do the rest of its thing
 WORKDIR $WP_SRC_ROOT

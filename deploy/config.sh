@@ -43,6 +43,7 @@ OIDC_LOGIN_TYPE='auto'
 OIDC_CREATE_IF_DOES_NOT_EXIST='true'
 OIDC_LINK_EXISTING_USERS='true'
 OIDC_REDIRECT_USER_BACK='true'
+OIDC_ENFORCE_PRIVACY='true'
 
 # Directories
 DEPLOY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"

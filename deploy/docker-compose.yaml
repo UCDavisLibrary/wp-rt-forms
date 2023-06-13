@@ -16,6 +16,7 @@ services:
         define('WP_SITEURL', '${SERVER_URL}' );
         define('WP_HOME', '${SERVER_URL}' );
         define('FORCE_SSL_ADMIN', true);
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-rt-forms-client}
       OIDC_ENDPOINT_LOGIN_URL: ${OIDC_ENDPOINT_LOGIN_URL:-https://sandbox.auth.library.ucdavis.edu/realms/internal/protocol/openid-connect/auth}
       OIDC_ENDPOINT_USERINFO_URL: ${OIDC_ENDPOINT_USERINFO_URL:-https://sandbox.auth.library.ucdavis.edu/realms/internal/protocol/openid-connect/userinfo}
       OIDC_ENDPOINT_TOKEN_URL: ${OIDC_ENDPOINT_TOKEN_URL:-https://sandbox.auth.library.ucdavis.edu/realms/internal/protocol/openid-connect/token}
@@ -25,6 +26,7 @@ services:
       OIDC_CREATE_IF_DOES_NOT_EXIST: ${OIDC_CREATE_IF_DOES_NOT_EXIST:-true}
       OIDC_LINK_EXISTING_USERS: ${OIDC_LINK_EXISTING_USERS:-true}
       OIDC_REDIRECT_USER_BACK: ${OIDC_REDIRECT_USER_BACK:-true}
+      OIDC_ENFORCE_PRIVACY: ${OIDC_ENFORCE_PRIVACY:-true}
     tmpfs:
       - /run
       - /tmp
