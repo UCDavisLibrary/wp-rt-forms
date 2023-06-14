@@ -59,6 +59,7 @@ GITHUB_ORG_URL=https://github.com/UCDavisLibrary
 # theme
 THEME_REPO_NAME=ucdlib-theme-wp
 THEME_REPO_URL=$GITHUB_ORG_URL/$WEBSITE_REPO_NAME
+UCD_THEME_ENV=prod
 
 # forminator rt addon plugin
 FORMINATOR_RT_ADDON_REPO_NAME=forminator-addon-rt
@@ -70,7 +71,7 @@ FORMINATOR_RT_ADDON_REPO_URL=$GITHUB_ORG_URL/$FORMINATOR_RT_ADDON_REPO_NAME
 GIT=git
 GIT_CLONE="$GIT clone"
 
-ALL_GIT_REPOSITORIES=( $THEME_REPO_NAME $FORMINATOR_RT_ADDON_REPO_NAME )
+ALL_GIT_REPOSITORIES=( $FORMINATOR_RT_ADDON_REPO_NAME )
 REPOSITORY_DIR=repositories
 
 ##
@@ -111,14 +112,8 @@ ALL_DOCKER_BUILD_IMAGE_TAGS=(
 
 # NPM
 NPM=npm
-NPM_PRIVATE_PACKAGES=(
-  $REPOSITORY_DIR/$THEME_REPO_NAME/src/public
-  $REPOSITORY_DIR/$THEME_REPO_NAME/src/editor
-)
-JS_BUNDLES=(
-  $REPOSITORY_DIR/$THEME_REPO_NAME/src/public
-  $REPOSITORY_DIR/$THEME_REPO_NAME/src/editor
-)
+NPM_PRIVATE_PACKAGES=()
+JS_BUNDLES=()
 
 # wp directories
 WP_SRC_ROOT=/usr/src/wordpress
@@ -135,3 +130,18 @@ if [[ -f "$CONFIG_DIR/reader-key.json" ]]; then
 else
   echo "Warning: no Google key file found. Run cmds/init-keys.sh to download the key file."
 fi
+
+# Theme development
+# To be able to edit the theme as you develop this app, uncomment the following, run init-local-dev:
+# and then uncomment the corresponding volume section in your local-dev docker-compose file
+
+# ALL_GIT_REPOSITORIES=( $THEME_REPO_NAME $FORMINATOR_RT_ADDON_REPO_NAME )
+# NPM_PRIVATE_PACKAGES=(
+#   $REPOSITORY_DIR/$THEME_REPO_NAME/src/public
+#   $REPOSITORY_DIR/$THEME_REPO_NAME/src/editor
+# )
+# JS_BUNDLES=(
+#   $REPOSITORY_DIR/$THEME_REPO_NAME/src/public
+#   $REPOSITORY_DIR/$THEME_REPO_NAME/src/editor
+# )
+# UCD_THEME_ENV=dev

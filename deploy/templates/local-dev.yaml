@@ -16,7 +16,7 @@ services:
       WORDPRESS_DISABLE_FATAL_ERROR_HANDLER: ${WORDPRESS_DISABLE_FATAL_ERROR_HANDLER:-1}
       WORDPRESS_CONFIG_EXTRA: |
         define( 'WP_ENVIRONMENT_TYPE', 'local' );
-      UCD_THEME_ENV: ${UCD_THEME_ENV:-dev}
+      UCD_THEME_ENV: ${UCD_THEME_ENV:-{{UCD_THEME_ENV}}}
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-{{OIDC_CLIENT_ID}}}
       OIDC_ENDPOINT_LOGIN_URL: ${OIDC_ENDPOINT_LOGIN_URL:-{{OIDC_ENDPOINT_LOGIN_URL}}}
       OIDC_ENDPOINT_USERINFO_URL: ${OIDC_ENDPOINT_USERINFO_URL:-{{OIDC_ENDPOINT_USERINFO_URL}}}
@@ -34,7 +34,7 @@ services:
     volumes:
       - uploads-data:{{WP_SRC_ROOT}}/wp-content/uploads
       - wp-logs-data:{{WP_LOG_ROOT}}
-      - ../{{REPOSITORY_DIR}}/{{THEME_REPO_NAME}}:{{WP_UCD_THEME_DIR}}
+      # - ../{{REPOSITORY_DIR}}/{{THEME_REPO_NAME}}:{{WP_UCD_THEME_DIR}}
       - ../{{REPOSITORY_DIR}}/{{FORMINATOR_RT_ADDON_REPO_NAME}}:{{WP_PLUGIN_DIR}}/{{FORMINATOR_RT_ADDON_REPO_NAME}}
       - ../../src/plugins/ucdlib-forminator-customizations:{{WP_PLUGIN_DIR}}/ucdlib-forminator-customizations
 
