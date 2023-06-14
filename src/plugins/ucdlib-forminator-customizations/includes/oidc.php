@@ -35,10 +35,10 @@ class UcdlibAuth {
    * if the user has a corresponding claim in access token from identity provider.
    */
   public function setAdvancedRole($user, $userClaim){
-    $accessTokenEncoded = get_user_meta( $user->ID, 'openid-connect-generic-last-token-response', true );
-    if ( !$accessTokenEncoded ) return;
+    $tokensEncoded = get_user_meta( $user->ID, 'openid-connect-generic-last-token-response', true );
+    if ( !$tokensEncoded ) return;
     try {
-      $parts = explode( '.', $accessTokenEncoded['access_token'] );
+      $parts = explode( '.', $tokensEncoded['access_token'] );
       if ( count( $parts ) != 3 ) return;
       $accessToken = json_decode(
         base64_decode(
@@ -54,22 +54,24 @@ class UcdlibAuth {
       return;
     }
     if ( !$accessToken ) return;
-    set_transient( 'steve', $accessToken );
-
-    $wpRole = '';
 
     // check realm roles
     if ( isset( $accessToken['realm_access']['roles'] ) ) {
       if ( in_array('admin-access',  $accessToken['realm_access']['roles']) ){
-        $wpRole = 'administrator';
+        $user->set_role( 'administrator' );
+        return;
       }
     }
 
     // check client roles
-    //$client = OIDC_CLIENT_ID
-
-    if ( $wpRole ) {
-      $user->set_role( $wpRole );
+    if ( !OIDC_CLIENT_ID ) return;
+    if ( !isset( $accessToken['resource_access'][OIDC_CLIENT_ID]['roles'] ) ) return;
+    $roles = $accessToken['resource_access'][OIDC_CLIENT_ID]['roles'];
+    $wpRoles = array( 'administrator', 'editor', 'author' );
+    $allowedRoles = array_intersect( $wpRoles, $roles );
+    if ( count( $allowedRoles ) > 0 ) {
+      $allowedRoles = array_values( $allowedRoles );
+      $user->set_role( $allowedRoles[0] );
     }
 
   }
