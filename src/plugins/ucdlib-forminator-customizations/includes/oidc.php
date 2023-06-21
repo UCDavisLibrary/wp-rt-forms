@@ -12,6 +12,8 @@ class UcdlibAuth {
       add_action('after_setup_theme', [$this, 'hideAdminBar']);
       add_action( 'openid-connect-generic-update-user-using-current-claim', [$this, 'setAdvancedRole'], 10, 2 );
       add_action( 'openid-connect-generic-user-create', [$this, 'setAdvancedRole'], 10, 2 );
+      add_action( 'openid-connect-generic-login-button-text', [$this, 'loginButtonText'], 10, 1);
+      add_filter ( 'allow_password_reset', function (){return false;} );
     }
 
   }
@@ -73,6 +75,12 @@ class UcdlibAuth {
       $allowedRoles = array_values( $allowedRoles );
       $user->set_role( $allowedRoles[0] );
     }
+  }
 
+  /**
+   * @description Change the text on the OIDC login button.
+   */
+  public function loginButtonText($text){
+    return 'Login with Your UC Davis Account';
   }
 }
