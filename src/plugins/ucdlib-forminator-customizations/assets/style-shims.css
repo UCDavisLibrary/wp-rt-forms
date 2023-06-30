@@ -72,7 +72,55 @@ input.forminator-datepicker {
 
 .forminator-file-upload input {
   border: none;
-  box-shadow: none
+  box-shadow: none;
+}
+.forminator-input-file {
+  border: none;
+  box-shadow: none;
+}
+.forminator-uploaded-files {
+  padding-left: 1rem;
+  margin-top: 0;
+}
+.forminator-uploaded-file {
+  list-style: none;
+}
+.forminator-uploaded-file--content {
+  display: flex;
+  align-items: center;
+  padding: .5rem 0;
+}
+.forminator-uploaded-file--title {
+  margin-bottom: 0;
+  color: #13639e;
+}
+.forminator-uploaded-file--size {
+  margin-bottom: 0;
+  font-size: .8rem;
+}
+.forminator-uploaded-file--delete {
+  margin-left: 1rem;
+}
+.forminator-button-delete {
+  color: #c10230;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+.forminator-img-preview {
+  background-size: contain;
+  width: 75px;
+  height: 75px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.forminator-uploaded-file--text {
+  margin-left: 1rem;
+}
+@media(max-width: 480px) {
+  .forminator-uploaded-file--content {
+    flex-wrap: wrap;
+  }
 }
 
 .forminator-button {
