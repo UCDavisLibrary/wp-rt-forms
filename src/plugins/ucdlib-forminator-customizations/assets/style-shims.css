@@ -872,3 +872,6 @@ input.forminator-datepicker {
   border: none;
   font-size: 1.2rem;
 }
+.forminator-repeater-label {
+  font-size: 1.5rem;
+}
