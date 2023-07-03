@@ -837,3 +837,38 @@ input.forminator-datepicker {
       padding: 1rem
   }
 }
+/* Repeater field */
+.forminator-repeater-action-button {
+  width: auto;
+  margin-top: .5rem;
+  margin-bottom: .5rem;
+}
+.forminator-grouped-fields {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #dbeaf7;
+}
+.forminator-repeater-add {
+  margin-right: 1rem;
+  border-color: #266041;
+  color: #266041;
+}
+.forminator-repeater-remove {
+  border-color: #c10230;
+  color: #c10230;
+}
+.sui-screen-reader-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+.forminator-repeater-action-icon {
+  background-color: transparent;
+  border: none;
+  font-size: 1.2rem;
+}
