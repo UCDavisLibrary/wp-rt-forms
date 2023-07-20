@@ -1,7 +1,7 @@
 version: '3'
 services:
   wordpress:
-    image: {{APP_IMAGE_NAME}}:{{REPO_TAG}}
+    image: {{APP_IMAGE_NAME_TAG}}
     env_file:
       - .env
     ports:
@@ -38,8 +38,58 @@ services:
       - ../{{REPOSITORY_DIR}}/{{FORMINATOR_RT_ADDON_REPO_NAME}}:{{WP_PLUGIN_DIR}}/{{FORMINATOR_RT_ADDON_REPO_NAME}}
       - ../../src/plugins/ucdlib-forminator-customizations:{{WP_PLUGIN_DIR}}/ucdlib-forminator-customizations
 
+  backup:
+    image: {{APP_UTILS_IMAGE_NAME_TAG}}
+    env_file:
+      - .env
+    environment:
+      BACKUP_DATA_ENV: ${BACKUP_DATA_ENV:-localhost}
+      GC_BUCKET_BACKUPS: ${GC_BUCKET_BACKUPS:-{{GC_BUCKET_BACKUPS}}}
+      BACKUP_FILE_NAME: ${BACKUP_FILE_NAME:-{{BACKUP_FILE_NAME}}}
+      UPLOADS_FILE_NAME: ${UPLOADS_FILE_NAME:-{{UPLOADS_FILE_NAME}}}
+      WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
+      WORDPRESS_DB_DATABASE: ${DB_DATABASE:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-wordpress}
+      WORDPRESS_DB_USER: ${DB_USER:-wordpress}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-wordpress}
+    depends_on:
+      - db
+      - wordpress
+    volumes:
+      - uploads-data:/uploads
+      - ../utils/backup:/deploy-utils/backup
+      - ../writer-key.json:/etc/service-account.json
+    command: ./tail.sh
+    # command: "./backup/entrypoint.sh"
+
+  init:
+    image: {{APP_UTILS_IMAGE_NAME_TAG}}
+    env_file:
+      - .env
+    environment:
+      RUN_INIT: "true"
+      INIT_DATA_ENV: ${INIT_DATA_ENV:-localhost}
+      SERVER_URL: http://localhost:${HOST_PORT:-3000}
+      GC_BUCKET_BACKUPS: ${GC_BUCKET_BACKUPS:-{{GC_BUCKET_BACKUPS}}}
+      BACKUP_FILE_NAME: ${BACKUP_FILE_NAME:-{{BACKUP_FILE_NAME}}}
+      UPLOADS_FILE_NAME: ${UPLOADS_FILE_NAME:-{{UPLOADS_FILE_NAME}}}
+      WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
+      WORDPRESS_DB_DATABASE: ${DB_DATABASE:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-wordpress}
+      WORDPRESS_DB_USER: ${DB_USER:-wordpress}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-wordpress}
+    depends_on:
+      - db
+      - wordpress
+    volumes:
+      - uploads-data:/uploads
+      - ../utils/init:/deploy-utils/init
+      - ../utils/wp-scripts:/deploy-utils/wp-scripts
+      - ../reader-key.json:/etc/service-account.json
+    command: ./init/init.sh
+
   db:
-    image: {{MYSQL_IMAGE_NAME}}:{{MYSQL_TAG}}
+    image: {{MYSQL_IMAGE_NAME_TAG}}
     env_file:
       - .env
     environment:
@@ -55,7 +105,7 @@ services:
         hard: 262114
 
   adminer:
-    image: {{ADMINER_IMAGE_NAME}}:{{ADMINER_TAG}}
+    image: {{ADMINER_IMAGE_NAME_TAG}}
     ports:
       - ${ADMINER_HOST_PORT:-8080}:8080
 

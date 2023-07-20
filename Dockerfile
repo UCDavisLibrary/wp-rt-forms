@@ -12,16 +12,16 @@ ARG WPMU_DEV_DASHBOARD_ZIP_FILE="wpmu-dev-dashboard-${WPMU_DEV_DASHBOARD_VERSION
 FROM google/cloud-sdk:alpine as gcloud
 RUN mkdir -p /cache
 WORKDIR /cache
-ARG GOOGLE_KEY_FILE_CONTENT
-ARG GC_PLUGIN_DIR
+ARG GC_READ_KEY_FILE_CONTENT
+ARG GC_BUCKET_PLUGINS
 ARG FORMINATOR_ZIP_FILE
 ARG OPENID_CONNECT_GENERIC_ZIP_FILE
 ARG WPMU_DEV_DASHBOARD_ZIP_FILE
 
-RUN echo $GOOGLE_KEY_FILE_CONTENT | gcloud auth activate-service-account --key-file=-
-RUN gsutil cp gs://${GC_PLUGIN_DIR}/forminator-pro/${FORMINATOR_ZIP_FILE} . \
-&& gsutil cp gs://${GC_PLUGIN_DIR}/openid-connect-generic/${OPENID_CONNECT_GENERIC_ZIP_FILE} . \
-&& gsutil cp gs://${GC_PLUGIN_DIR}/wpmudev-updates/${WPMU_DEV_DASHBOARD_ZIP_FILE} .
+RUN echo $GC_READ_KEY_FILE_CONTENT | gcloud auth activate-service-account --key-file=-
+RUN gsutil cp gs://${GC_BUCKET_PLUGINS}/forminator-pro/${FORMINATOR_ZIP_FILE} . \
+&& gsutil cp gs://${GC_BUCKET_PLUGINS}/openid-connect-generic/${OPENID_CONNECT_GENERIC_ZIP_FILE} . \
+&& gsutil cp gs://${GC_BUCKET_PLUGINS}/wpmudev-updates/${WPMU_DEV_DASHBOARD_ZIP_FILE} .
 
 # Main build
 FROM wordpress:${WP_CORE_VERSION} as wordpress
@@ -85,7 +85,6 @@ RUN curl -OL https://github.com/UCDavisLibrary/ucdlib-theme-wp/releases/download
 # remove default plugins and insert the plugins we downloaded from GCS
 WORKDIR $WP_PLUGIN_DIR
 RUN rm -rf */ && rm -f hello.php
-RUN git clone ${FORMINATOR_RT_ADDON_REPO_URL}.git
 COPY src/plugins .
 COPY --from=gcloud /cache/${FORMINATOR_ZIP_FILE} .
 COPY --from=gcloud /cache/${OPENID_CONNECT_GENERIC_ZIP_FILE} .
@@ -94,6 +93,11 @@ RUN unzip ${FORMINATOR_ZIP_FILE} && rm ${FORMINATOR_ZIP_FILE} \
 && unzip ${OPENID_CONNECT_GENERIC_ZIP_FILE} && rm ${OPENID_CONNECT_GENERIC_ZIP_FILE} \
 && unzip ${WPMU_DEV_DASHBOARD_ZIP_FILE} && rm ${WPMU_DEV_DASHBOARD_ZIP_FILE}
 RUN mv $OPENID_CONNECT_GENERIC_DIR openid-connect-generic
+
+# Get our rt forminator addon plugin
+RUN git clone ${FORMINATOR_RT_ADDON_REPO_URL}.git forminator-addon-rt \
+&& cd forminator-addon-rt \
+&& git checkout ${FORMINATOR_RT_ADDON_TAG}
 
 # Back to site root so wordpress can do the rest of its thing
 WORKDIR $WP_SRC_ROOT

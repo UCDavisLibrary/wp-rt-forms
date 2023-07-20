@@ -19,8 +19,8 @@ fi
 docker build \
   -t $APP_IMAGE_NAME_TAG \
   --cache-from=$APP_IMAGE_NAME:$CONTAINER_CACHE_TAG \
-  --build-arg GOOGLE_KEY_FILE_CONTENT="${GOOGLE_KEY_FILE_CONTENT}" \
-  --build-arg GC_PLUGIN_DIR=${GC_PLUGIN_DIR} \
+  --build-arg GC_READ_KEY_FILE_CONTENT="${GC_READ_KEY_FILE_CONTENT}" \
+  --build-arg GC_BUCKET_PLUGINS=${GC_BUCKET_PLUGINS} \
   --build-arg FORMINATOR_VERSION=${FORMINATOR_VERSION} \
   --build-arg OPENID_CONNECT_GENERIC_VERSION=${OPENID_CONNECT_GENERIC_VERSION} \
   --build-arg THEME_TAG=${THEME_TAG} \
@@ -36,3 +36,10 @@ docker build \
   --build-arg BUILD_TIME=${BUILD_TIME} \
   --build-arg APP_VERSION=${APP_VERSION} \
   $ROOT_DIR
+
+# Deploy utils
+docker build \
+  -t $APP_UTILS_IMAGE_NAME_TAG \
+  --cache-from=$APP_UTILS_IMAGE_NAME:$CONTAINER_CACHE_TAG \
+  --build-arg APP_IMAGE_NAME_TAG=${APP_IMAGE_NAME_TAG} \
+  $UTILS_DIR

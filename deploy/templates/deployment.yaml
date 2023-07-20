@@ -1,7 +1,7 @@
 version: '3'
 services:
   wordpress:
-    image: {{APP_IMAGE_NAME}}:{{REPO_TAG}}
+    image: {{{{APP_IMAGE_NAME_TAG}}}}
     env_file:
       - .env
     ports:
@@ -35,7 +35,7 @@ services:
       - wp-logs-data:{{WP_LOG_ROOT}}
 
   db:
-    image: {{MYSQL_IMAGE_NAME}}:{{MYSQL_TAG}}
+    image: {{MYSQL_IMAGE_NAME_TAG}}
     restart: always
     env_file:
       - .env

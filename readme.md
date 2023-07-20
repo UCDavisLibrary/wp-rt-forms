@@ -9,7 +9,7 @@ To get this app up and running on your local machine, follow these steps:
    2. Git clone this repository
    3. Git clone all repositories listed in the `ALL_GIT_REPOSITORIES` variable in `deploy/config.sh`. It is incumbent on you to check out the branches/tags you want to work on for these repositories.
    4. `cd wp-rt-forms/deploy`
-   5. Download Google Cloud credentials by running `./cmds/init-keys.sh`
+   5. Download Google Cloud credentials by running `./cmds/init-reader-key.sh`
    6. Set up local environment with `./cmds/init-local-dev.sh`
    7. Build your local docker images with `./build-local-dev.sh`
    8. Generate deployment files with `./cmds/generate-deployment-files`. This will make the directory `wp-rt-forms-local-dev`. If you want to customize the port or similar settings, you can create an `.env` file here.

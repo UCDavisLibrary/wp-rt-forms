@@ -14,7 +14,7 @@ source ../config.sh
 # generate main dc file
 content=$(cat deployment.yaml)
 for key in $(compgen -v); do
-  if [[ $key == "COMP_WORDBREAKS" || $key == "content" || $key == "GOOGLE_KEY_FILE_CONTENT" ]]; then
+  if [[ $key == "COMP_WORDBREAKS" || $key == "content" || $key == "GC_READ_KEY_FILE_CONTENT" ]]; then
     continue;
   fi
   escaped=$(printf '%s\n' "${!key}" | sed -e 's/[\/&]/\\&/g')
@@ -26,7 +26,7 @@ echo "$content" > ../docker-compose.yaml
 content=$(cat local-dev.yaml)
 LOCAL_BUILD=true source ../config.sh
 for key in $(compgen -v); do
-  if [[ $key == "COMP_WORDBREAKS" || $key == "content" || $key == "GOOGLE_KEY_FILE_CONTENT" ]]; then
+  if [[ $key == "COMP_WORDBREAKS" || $key == "content" || $key == "GC_READ_KEY_FILE_CONTENT" ]]; then
     continue;
   fi
   escaped=$(printf '%s\n' "${!key}" | sed -e 's/[\/&]/\\&/g')

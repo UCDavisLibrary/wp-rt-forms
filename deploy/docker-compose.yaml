@@ -1,7 +1,7 @@
 version: '3'
 services:
   wordpress:
-    image: gcr.io/digital-ucdavis-edu/itis-wp-rt-forms:main
+    image: {{gcr.io/digital-ucdavis-edu/itis-wp-rt-forms:main}}
     env_file:
       - .env
     ports:

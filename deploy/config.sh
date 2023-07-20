@@ -13,7 +13,7 @@ fi
 
 # Main version number we are tagging the app with. Always update
 # this when you cut a new version of the app!
-APP_VERSION=v0.0.9.${BUILD_NUM}
+APP_VERSION=v1.0.0.${BUILD_NUM}
 
 # Repository tags/branchs
 # Tags should always be used for production deployments
@@ -22,6 +22,7 @@ REPO_TAG=main
 
 # Dependency tags/branches
 THEME_TAG='v3.4.0'
+FORMINATOR_RT_ADDON_TAG='main'
 WP_CORE_VERSION='6.2.2'
 FORMINATOR_VERSION='1.24.1'
 OPENID_CONNECT_GENERIC_VERSION='3.9.1'
@@ -47,6 +48,7 @@ OIDC_ENFORCE_PRIVACY='true'
 
 # Directories
 DEPLOY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+UTILS_DIR=$DEPLOY_DIR/utils
 ROOT_DIR="$( cd $DEPLOY_DIR/.. && pwd )"
 SRC_DIR=$ROOT_DIR/src
 
@@ -81,12 +83,11 @@ REPOSITORY_DIR=repositories
 # Container Registery
 CONTAINER_REG_ORG=gcr.io/digital-ucdavis-edu
 
-#if [[ -z $BRANCH_NAME ]]; then
-#  CONTAINER_CACHE_TAG=$(git rev-parse --abbrev-ref HEAD)
-#else
-#  CONTAINER_CACHE_TAG=$BRANCH_NAME
-#fi
-CONTAINER_CACHE_TAG='sandbox'
+if [[ -z $BRANCH_NAME ]]; then
+ CONTAINER_CACHE_TAG=$(git rev-parse --abbrev-ref HEAD)
+else
+ CONTAINER_CACHE_TAG=$BRANCH_NAME
+fi
 
 # set localhost/local-dev used by
 # local development docker-compose file
@@ -97,17 +98,20 @@ fi
 
 # Container Images
 APP_IMAGE_NAME=$CONTAINER_REG_ORG/itis-wp-rt-forms
+APP_UTILS_IMAGE_NAME=$APP_IMAGE_NAME-utils
 MYSQL_IMAGE_NAME=mysql
 ADMINER_IMAGE_NAME=adminer
 
 APP_IMAGE_NAME_TAG=$APP_IMAGE_NAME:$REPO_TAG
+APP_UTILS_IMAGE_NAME_TAG=$APP_UTILS_IMAGE_NAME:$REPO_TAG
 MYSQL_IMAGE_NAME_TAG=$MYSQL_IMAGE_NAME:$MYSQL_TAG
 ADMINER_IMAGE_NAME_TAG=$ADMINER_IMAGE_NAME:$ADMINER_TAG
 
-ALL_DOCKER_BUILD_IMAGES=( $APP_IMAGE_NAME )
+ALL_DOCKER_BUILD_IMAGES=( $APP_IMAGE_NAME $APP_UTILS_IMAGE_NAME )
 
 ALL_DOCKER_BUILD_IMAGE_TAGS=(
   $APP_IMAGE_NAME_TAG
+  $APP_UTILS_IMAGE_NAME_TAG
 )
 
 # NPM
@@ -123,13 +127,19 @@ WP_UCD_THEME_DIR=$WP_THEME_DIR/$THEME_REPO_NAME
 WP_PLUGIN_DIR=$WP_SRC_ROOT/wp-content/plugins
 
 # google cloud
-GC_PLUGIN_DIR=wordpress-general/plugins
-CONFIG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-if [[ -f "$CONFIG_DIR/reader-key.json" ]]; then
-  GOOGLE_KEY_FILE_CONTENT="$(cat $CONFIG_DIR/reader-key.json)"
+GC_BUCKET_PLUGINS=wordpress-general/plugins
+GC_BUCKET_BACKUPS=itis-backups/wp-rt-forms
+BACKUP_FILE_NAME="db.sql.gz"
+UPLOADS_FILE_NAME="uploads.tar.gz"
+if [[ -f "$DEPLOY_DIR/reader-key.json" ]]; then
+  GC_READ_KEY_FILE_CONTENT="$(cat $DEPLOY_DIR/reader-key.json)"
 else
-  echo "Warning: no Google key file found. Run cmds/init-keys.sh to download the key file."
+  echo "Warning: no Google key file found. Run cmds/init-reader-key.sh to download the key file."
 fi
+# To run init/backup utils, you may also need to set additional variables in your env file:
+# RUN_INIT/INIT_DATA_ENV - used to hydrate db on startup
+# RUN_BACKUP/BACKUP_DATA_ENV - used to backup db nightly
+# And, you will need to get a service account key with ./cmds/get-reader-key.sh or ./cmds/get-writer-key.sh
 
 # Theme development
 # To be able to edit the theme as you develop this app, uncomment the following, run init-local-dev:
