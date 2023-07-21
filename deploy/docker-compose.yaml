@@ -34,6 +34,49 @@ services:
       - uploads-data:/usr/src/wordpress/wp-content/uploads
       - wp-logs-data:/var/log/wordpress
 
+  backup:
+    image: gcr.io/digital-ucdavis-edu/itis-wp-rt-forms-utils:main
+    env_file:
+      - .env
+    environment:
+      GC_BUCKET_BACKUPS: ${GC_BUCKET_BACKUPS:-itis-backups/wp-rt-forms}
+      BACKUP_FILE_NAME: ${BACKUP_FILE_NAME:-db.sql.gz}
+      UPLOADS_FILE_NAME: ${UPLOADS_FILE_NAME:-uploads.tar.gz}
+      WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
+      WORDPRESS_DB_DATABASE: ${DB_DATABASE}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_DB_USER: ${DB_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    depends_on:
+      - db
+      - wordpress
+    volumes:
+      - uploads-data:/uploads
+      - ./writer-key.json:/etc/service-account.json
+    command: "./backup/entrypoint.sh"
+
+  init:
+    image: gcr.io/digital-ucdavis-edu/itis-wp-rt-forms-utils:main
+    env_file:
+      - .env
+    environment:
+      SERVER_URL: ${SERVER_URL}
+      GC_BUCKET_BACKUPS: ${GC_BUCKET_BACKUPS:-itis-backups/wp-rt-forms}
+      BACKUP_FILE_NAME: ${BACKUP_FILE_NAME:-db.sql.gz}
+      UPLOADS_FILE_NAME: ${UPLOADS_FILE_NAME:-uploads.tar.gz}
+      WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
+      WORDPRESS_DB_DATABASE: ${DB_DATABASE}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_DB_USER: ${DB_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    depends_on:
+      - db
+      - wordpress
+    volumes:
+      - uploads-data:/uploads
+      - ./reader-key.json:/etc/service-account.json
+    command: ./init/init.sh
+
   db:
     image: mysql:5.7
     restart: always

@@ -2,7 +2,7 @@
 
 GOOGLE_CLOUD_PROJECT=digital-ucdavis-edu
 UPLOADS_DIR=/uploads
-WP_SCRIPTS_DIR=/util-cmds/wp-scripts
+WP_SCRIPTS_DIR=/deploy-utils/wp-scripts
 GOOGLE_APPLICATION_CREDENTIALS=/etc/service-account.json
 DATA_DIR=/deploy-utils/data/init
 
