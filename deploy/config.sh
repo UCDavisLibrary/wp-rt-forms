@@ -142,16 +142,16 @@ fi
 # And, you will need to get a service account key with ./cmds/get-reader-key.sh or ./cmds/get-writer-key.sh
 
 # Theme development
-# To be able to edit the theme as you develop this app, uncomment the following, run init-local-dev:
+# To be able to edit the theme as you develop this app, uncomment the following, run init-local-dev and then generate-deployment-files:
 # and then uncomment the corresponding volume section in your local-dev docker-compose file
 
-# ALL_GIT_REPOSITORIES=( $THEME_REPO_NAME $FORMINATOR_RT_ADDON_REPO_NAME )
-# NPM_PRIVATE_PACKAGES=(
-#   $REPOSITORY_DIR/$THEME_REPO_NAME/src/public
-#   $REPOSITORY_DIR/$THEME_REPO_NAME/src/editor
-# )
-# JS_BUNDLES=(
-#   $REPOSITORY_DIR/$THEME_REPO_NAME/src/public
-#   $REPOSITORY_DIR/$THEME_REPO_NAME/src/editor
-# )
-# UCD_THEME_ENV=dev
+ALL_GIT_REPOSITORIES=( $THEME_REPO_NAME $FORMINATOR_RT_ADDON_REPO_NAME )
+NPM_PRIVATE_PACKAGES=(
+  $REPOSITORY_DIR/$THEME_REPO_NAME/src/public
+  $REPOSITORY_DIR/$THEME_REPO_NAME/src/editor
+)
+JS_BUNDLES=(
+  $REPOSITORY_DIR/$THEME_REPO_NAME/src/public
+  $REPOSITORY_DIR/$THEME_REPO_NAME/src/editor
+)
+UCD_THEME_ENV=dev

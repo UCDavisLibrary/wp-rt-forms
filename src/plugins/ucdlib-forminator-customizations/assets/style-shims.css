@@ -30,6 +30,10 @@ select+.forminator-description {
   display: block
 }
 
+.forminator-description span[data-limit] {
+  padding-left: .5rem;
+}
+
 .forminator-input-with-icon>label {
   display: none
 }
@@ -77,6 +81,7 @@ input.forminator-datepicker {
 .forminator-input-file {
   border: none;
   box-shadow: none;
+  background-color: inherit;
 }
 .forminator-uploaded-files {
   padding-left: 1rem;
