@@ -18,10 +18,11 @@ ARG OPENID_CONNECT_GENERIC_ZIP_FILE
 ARG WPMU_DEV_DASHBOARD_ZIP_FILE
 
 COPY deploy/reader-key.json reader-key.json
-RUN gcloud auth activate-service-account --key-file=./reader-key.json
-RUN gsutil cp gs://${GC_BUCKET_PLUGINS}/forminator-pro/${FORMINATOR_ZIP_FILE} . \
+RUN gcloud auth activate-service-account --key-file=./reader-key.json \
+&& gsutil cp gs://${GC_BUCKET_PLUGINS}/forminator-pro/${FORMINATOR_ZIP_FILE} . \
 && gsutil cp gs://${GC_BUCKET_PLUGINS}/openid-connect-generic/${OPENID_CONNECT_GENERIC_ZIP_FILE} . \
 && gsutil cp gs://${GC_BUCKET_PLUGINS}/wpmudev-updates/${WPMU_DEV_DASHBOARD_ZIP_FILE} .
+RUN rm reader-key.json
 
 # Main build
 FROM wordpress:${WP_CORE_VERSION} as wordpress
