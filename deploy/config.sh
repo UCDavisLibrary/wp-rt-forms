@@ -18,7 +18,7 @@ APP_VERSION=v1.0.0.${BUILD_NUM}
 # Repository tags/branchs
 # Tags should always be used for production deployments
 # Branches can be used for development deployments
-REPO_TAG=main
+REPO_TAG=v1.0.0
 
 # Dependency tags/branches
 THEME_TAG='v3.4.0'
@@ -31,7 +31,7 @@ MYSQL_TAG=5.7
 ADMINER_TAG=4
 
 # Auth
-OIDC_PROVIDER_URL='https://sandbox.auth.library.ucdavis.edu/realms/internal'
+OIDC_PROVIDER_URL='https://auth.library.ucdavis.edu/realms/internal'
 OIDC_CLIENT_ID='rt-forms-client'
 #OIDC_CLIENT_SECRET='set this in your .env file'
 OIDC_PROTOCOL_URL=$OIDC_PROVIDER_URL/protocol/openid-connect
@@ -66,6 +66,7 @@ UCD_THEME_ENV=prod
 # forminator rt addon plugin
 FORMINATOR_RT_ADDON_REPO_NAME=forminator-addon-rt
 FORMINATOR_RT_ADDON_REPO_URL=$GITHUB_ORG_URL/$FORMINATOR_RT_ADDON_REPO_NAME
+FORMINATOR_ADDON_RT_HOST=https://rt.lib.ucdavis.edu
 
 ##
 # Git
@@ -97,7 +98,8 @@ fi
 
 
 # Container Images
-APP_IMAGE_NAME=$CONTAINER_REG_ORG/itis-wp-rt-forms
+APP_SLUG=itis-wp-rt-forms
+APP_IMAGE_NAME=$CONTAINER_REG_ORG/$APP_SLUG
 APP_UTILS_IMAGE_NAME=$APP_IMAGE_NAME-utils
 MYSQL_IMAGE_NAME=mysql
 ADMINER_IMAGE_NAME=adminer
@@ -131,9 +133,7 @@ GC_BUCKET_PLUGINS=wordpress-general/plugins
 GC_BUCKET_BACKUPS=itis-backups/wp-rt-forms
 BACKUP_FILE_NAME="db.sql.gz"
 UPLOADS_FILE_NAME="uploads.tar.gz"
-if [[ -f "$DEPLOY_DIR/reader-key.json" ]]; then
-  GC_READ_KEY_FILE_CONTENT="$(cat $DEPLOY_DIR/reader-key.json)"
-else
+if [[ ! -f "$DEPLOY_DIR/reader-key.json" ]]; then
   echo "Warning: no Google key file found. Run cmds/init-reader-key.sh to download the key file."
 fi
 # To run init/backup utils, you may also need to set additional variables in your env file:
@@ -145,13 +145,13 @@ fi
 # To be able to edit the theme as you develop this app, uncomment the following, run init-local-dev and then generate-deployment-files:
 # and then uncomment the corresponding volume section in your local-dev docker-compose file
 
-ALL_GIT_REPOSITORIES=( $THEME_REPO_NAME $FORMINATOR_RT_ADDON_REPO_NAME )
-NPM_PRIVATE_PACKAGES=(
-  $REPOSITORY_DIR/$THEME_REPO_NAME/src/public
-  $REPOSITORY_DIR/$THEME_REPO_NAME/src/editor
-)
-JS_BUNDLES=(
-  $REPOSITORY_DIR/$THEME_REPO_NAME/src/public
-  $REPOSITORY_DIR/$THEME_REPO_NAME/src/editor
-)
-UCD_THEME_ENV=dev
+# ALL_GIT_REPOSITORIES=( $THEME_REPO_NAME $FORMINATOR_RT_ADDON_REPO_NAME )
+# NPM_PRIVATE_PACKAGES=(
+#   $REPOSITORY_DIR/$THEME_REPO_NAME/src/public
+#   $REPOSITORY_DIR/$THEME_REPO_NAME/src/editor
+# )
+# JS_BUNDLES=(
+#   $REPOSITORY_DIR/$THEME_REPO_NAME/src/public
+#   $REPOSITORY_DIR/$THEME_REPO_NAME/src/editor
+# )
+# UCD_THEME_ENV=dev

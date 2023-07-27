@@ -12,13 +12,13 @@ ARG WPMU_DEV_DASHBOARD_ZIP_FILE="wpmu-dev-dashboard-${WPMU_DEV_DASHBOARD_VERSION
 FROM google/cloud-sdk:alpine as gcloud
 RUN mkdir -p /cache
 WORKDIR /cache
-ARG GC_READ_KEY_FILE_CONTENT
 ARG GC_BUCKET_PLUGINS
 ARG FORMINATOR_ZIP_FILE
 ARG OPENID_CONNECT_GENERIC_ZIP_FILE
 ARG WPMU_DEV_DASHBOARD_ZIP_FILE
 
-RUN echo $GC_READ_KEY_FILE_CONTENT | gcloud auth activate-service-account --key-file=-
+COPY deploy/reader-key.json reader-key.json
+RUN gcloud auth activate-service-account --key-file=./reader-key.json
 RUN gsutil cp gs://${GC_BUCKET_PLUGINS}/forminator-pro/${FORMINATOR_ZIP_FILE} . \
 && gsutil cp gs://${GC_BUCKET_PLUGINS}/openid-connect-generic/${OPENID_CONNECT_GENERIC_ZIP_FILE} . \
 && gsutil cp gs://${GC_BUCKET_PLUGINS}/wpmudev-updates/${WPMU_DEV_DASHBOARD_ZIP_FILE} .

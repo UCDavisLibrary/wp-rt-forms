@@ -5,7 +5,7 @@ services:
     env_file:
       - .env
     ports:
-      - ${HOST_PORT:-8000}:80
+      - ${HOST_PORT:-3000}:80
     restart: always
     environment:
       WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
@@ -27,6 +27,7 @@ services:
       OIDC_LINK_EXISTING_USERS: ${OIDC_LINK_EXISTING_USERS:-{{OIDC_LINK_EXISTING_USERS}}}
       OIDC_REDIRECT_USER_BACK: ${OIDC_REDIRECT_USER_BACK:-{{OIDC_REDIRECT_USER_BACK}}}
       OIDC_ENFORCE_PRIVACY: ${OIDC_ENFORCE_PRIVACY:-{{OIDC_ENFORCE_PRIVACY}}}
+      FORMINATOR_ADDON_RT_HOST: ${FORMINATOR_ADDON_RT_HOST:-{{FORMINATOR_ADDON_RT_HOST}}}
     tmpfs:
       - /run
       - /tmp
