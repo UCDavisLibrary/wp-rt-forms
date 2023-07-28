@@ -14,3 +14,13 @@ To get this app up and running on your local machine, follow these steps:
    7. Build your local docker images with `./build-local-dev.sh`
    8. Generate deployment files with `./cmds/generate-deployment-files`. This will make the directory `wp-rt-forms-local-dev`. If you want to customize the port or similar settings, you can create an `.env` file here.
    9. `cd wp-rt-forms-local-dev` and then `docker compose up`
+
+## Production Deployment
+
+1. Ensure your config.sh has the correct versions.
+2. Check in and tag your changes with git.
+3. Run submit.sh to build your images in Google Cloud.
+4. ssh veers.library.ucdavis.edu
+5. cd /opt/wp-rt-forms && git pull
+6. docker compose pull
+7. docker compose down && docker compose up -d
