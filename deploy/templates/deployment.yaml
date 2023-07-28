@@ -40,6 +40,7 @@ services:
       GC_BUCKET_BACKUPS: ${GC_BUCKET_BACKUPS:-{{GC_BUCKET_BACKUPS}}}
       BACKUP_FILE_NAME: ${BACKUP_FILE_NAME:-{{BACKUP_FILE_NAME}}}
       UPLOADS_FILE_NAME: ${UPLOADS_FILE_NAME:-{{UPLOADS_FILE_NAME}}}
+      WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
     depends_on:
       - db
       - wordpress

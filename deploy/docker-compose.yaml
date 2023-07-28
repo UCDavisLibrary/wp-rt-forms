@@ -40,6 +40,7 @@ services:
       GC_BUCKET_BACKUPS: ${GC_BUCKET_BACKUPS:-itis-backups/wp-rt-forms}
       BACKUP_FILE_NAME: ${BACKUP_FILE_NAME:-db.sql.gz}
       UPLOADS_FILE_NAME: ${UPLOADS_FILE_NAME:-uploads.tar.gz}
+      WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
     depends_on:
       - db
       - wordpress
