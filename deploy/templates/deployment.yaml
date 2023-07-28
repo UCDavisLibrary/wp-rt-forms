@@ -9,9 +9,6 @@ services:
     restart: always
     environment:
       WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
-      WORDPRESS_DB_DATABASE: ${DB_DATABASE}
-      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
-      WORDPRESS_DB_USER: ${DB_USER}
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_SITEURL', '${SERVER_URL}' );
         define('WP_HOME', '${SERVER_URL}' );
@@ -43,11 +40,6 @@ services:
       GC_BUCKET_BACKUPS: ${GC_BUCKET_BACKUPS:-{{GC_BUCKET_BACKUPS}}}
       BACKUP_FILE_NAME: ${BACKUP_FILE_NAME:-{{BACKUP_FILE_NAME}}}
       UPLOADS_FILE_NAME: ${UPLOADS_FILE_NAME:-{{UPLOADS_FILE_NAME}}}
-      WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
-      WORDPRESS_DB_DATABASE: ${DB_DATABASE}
-      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
-      WORDPRESS_DB_USER: ${DB_USER}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     depends_on:
       - db
       - wordpress
@@ -61,15 +53,10 @@ services:
     env_file:
       - .env
     environment:
-      SERVER_URL: ${SERVER_URL}
       GC_BUCKET_BACKUPS: ${GC_BUCKET_BACKUPS:-{{GC_BUCKET_BACKUPS}}}
       BACKUP_FILE_NAME: ${BACKUP_FILE_NAME:-{{BACKUP_FILE_NAME}}}
       UPLOADS_FILE_NAME: ${UPLOADS_FILE_NAME:-{{UPLOADS_FILE_NAME}}}
       WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
-      WORDPRESS_DB_DATABASE: ${DB_DATABASE}
-      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
-      WORDPRESS_DB_USER: ${DB_USER}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     depends_on:
       - db
       - wordpress
@@ -83,11 +70,6 @@ services:
     restart: always
     env_file:
       - .env
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - db-data:/var/lib/mysql
     ulimits:

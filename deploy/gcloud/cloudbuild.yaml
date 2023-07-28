@@ -60,6 +60,10 @@ steps:
     entrypoint: "docker"
     args: ["push", '${_APP_IMAGE_NAME_TAG}']
 
+  - name: gcr.io/cloud-builders/docker
+    entrypoint: "docker"
+    args: ["push", '${_APP_UTILS_IMAGE_NAME_TAG}']
+
 availableSecrets:
   secretManager:
   - versionName: projects/digital-ucdavis-edu/secrets/itis-backup-reader-key/versions/latest
