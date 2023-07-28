@@ -1,7 +1,7 @@
 version: '3'
 services:
   wordpress:
-    image: {{{{APP_IMAGE_NAME_TAG}}}}
+    image: {{APP_IMAGE_NAME_TAG}}
     env_file:
       - .env
     ports:
