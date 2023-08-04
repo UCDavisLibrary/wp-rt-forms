@@ -13,12 +13,12 @@ fi
 
 # Main version number we are tagging the app with. Always update
 # this when you cut a new version of the app!
-APP_VERSION=v1.0.1.${BUILD_NUM}
+APP_VERSION=v1.0.2.${BUILD_NUM}
 
 # Repository tags/branchs
 # Tags should always be used for production deployments
 # Branches can be used for development deployments
-REPO_TAG=v1.0.1
+REPO_TAG=sandbox
 
 # Dependency tags/branches
 THEME_TAG='v3.4.0'
@@ -36,7 +36,8 @@ OIDC_CLIENT_ID='rt-forms-client'
 #OIDC_CLIENT_SECRET='set this in your .env file'
 OIDC_PROTOCOL_URL=$OIDC_PROVIDER_URL/protocol/openid-connect
 OIDC_ENDPOINT_LOGIN_URL=$OIDC_PROTOCOL_URL/auth
-OIDC_ENDPOINT_USERINFO_URL=$OIDC_PROTOCOL_URL/userinfo
+OIDC_ENDPOINT_USERINFO_URL="" # if left blank, will use id token for verifying user
+#OIDC_ENDPOINT_USERINFO_URL=$OIDC_PROTOCOL_URL/userinfo
 OIDC_ENDPOINT_TOKEN_URL=$OIDC_PROTOCOL_URL/token
 OIDC_ENDPOINT_LOGOUT_URL=$OIDC_PROTOCOL_URL/logout
 OIDC_CLIENT_SCOPE='openid profile email roles'

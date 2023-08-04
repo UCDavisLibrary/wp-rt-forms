@@ -14,7 +14,16 @@ class UcdlibAuth {
       add_action( 'openid-connect-generic-user-create', [$this, 'setAdvancedRole'], 10, 2 );
       add_action( 'openid-connect-generic-login-button-text', [$this, 'loginButtonText'], 10, 1);
       add_filter ( 'allow_password_reset', function (){return false;} );
+      add_filter('openid-connect-generic-user-login-test', [$this, 'authorizeUser'], 10, 2);
+      add_filter('openid-connect-generic-user-creation-test', [$this, 'authorizeUser'], 10, 2);
     }
+
+    $this->allowedClientRoles = [
+      'administrator',
+      'editor',
+      'author',
+      'subscriber'
+    ];
 
   }
 
@@ -30,6 +39,37 @@ class UcdlibAuth {
     if (!array_intersect( $allowedRoles, $user->roles ) && !is_admin()) {
       show_admin_bar(false);
     }
+  }
+
+  /**
+   * @description Authorize a user to view site based on their keycloak roles
+   * @param $authorize boolean
+   * @param $user_claim array - This is either the user id endpoint response or the id token. Depending on if the OIDC_ENDPOINT_USERINFO_URL env var is set.
+   */
+  public function authorizeUser( $authorize, $user_claim ){
+    $authorize = false;
+    $allowedRealmRoles = [
+      'admin-access',
+      'basic-access'
+    ];
+
+    // check realm roles
+    if ( isset( $user_claim['realm_access']['roles'] ) ) {
+      $intersect = array_intersect( $allowedRealmRoles, $user_claim['realm_access']['roles'] );
+      if ( count( $intersect ) > 0 ) {
+        return true;
+      }
+    }
+
+    // check client roles
+    if ( !OIDC_CLIENT_ID ) return $authorize;
+    if ( !isset( $user_claim['resource_access'][OIDC_CLIENT_ID]['roles'] ) ) return $authorize;
+    $clientRoles = $user_claim['resource_access'][OIDC_CLIENT_ID]['roles'];
+    $intersect = array_intersect( $this->allowedClientRoles, $clientRoles );
+    if ( count( $intersect ) > 0 ) {
+      return true;
+    }
+    return $authorize;
   }
 
   /**
@@ -69,8 +109,7 @@ class UcdlibAuth {
     if ( !OIDC_CLIENT_ID ) return;
     if ( !isset( $accessToken['resource_access'][OIDC_CLIENT_ID]['roles'] ) ) return;
     $roles = $accessToken['resource_access'][OIDC_CLIENT_ID]['roles'];
-    $wpRoles = array( 'administrator', 'editor', 'author' );
-    $allowedRoles = array_intersect( $wpRoles, $roles );
+    $allowedRoles = array_intersect( $this->allowedClientRoles, $roles );
     if ( count( $allowedRoles ) > 0 ) {
       $allowedRoles = array_values( $allowedRoles );
       $user->set_role( $allowedRoles[0] );
