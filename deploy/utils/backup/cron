@@ -1,1 +1,1 @@
-0 3 * * * /util-cmds/backup.sh >> /var/log/cron.log
+0 3 * * * /deploy-utils/backup/backup.sh >> /var/log/cron.log

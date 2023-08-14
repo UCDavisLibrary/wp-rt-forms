@@ -5,6 +5,7 @@ UPLOADS_DIR=/uploads
 WP_SCRIPTS_DIR=/deploy-utils/wp-scripts
 GOOGLE_APPLICATION_CREDENTIALS=/etc/service-account.json
 DATA_DIR=/deploy-utils/data/init
+WP_SRC_ROOT=/usr/src/wordpress
 
 shopt -s expand_aliases
 
@@ -59,7 +60,7 @@ function updateDbHost {
   mysql -e "update wp_options set option_value='${SERVER_URL}' where option_name='home';"
   mysql -e "UPDATE wp_posts SET post_content = REPLACE(post_content, '${DATA_ENV_URL}', '${SERVER_URL}');"
   mysql -e "UPDATE wp_posts SET guid = REPLACE(guid, '${DATA_ENV_URL}', '${SERVER_URL}');"
-  wp eval-file ${WP_SCRIPTS_DIR}/update-host.php ${DATA_ENV_URL} ${SERVER_URL}  --allow-root
+  wp eval-file ${WP_SCRIPTS_DIR}/update-host.php ${DATA_ENV_URL} ${SERVER_URL} --path=$WP_SRC_ROOT --allow-root
 
   if [[ ! -z $SITE_TAGLINE ]]; then
     mysql -e "update wp_options set option_value='${SITE_TAGLINE}' where option_name='blogdescription';"
