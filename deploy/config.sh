@@ -13,21 +13,22 @@ fi
 
 # Main version number we are tagging the app with. Always update
 # this when you cut a new version of the app!
-APP_VERSION=v1.2.0.${BUILD_NUM}
+APP_VERSION=v1.3.0.${BUILD_NUM}
 
 # Repository tags/branchs
 # Tags should always be used for production deployments
 # Branches can be used for development deployments
-REPO_TAG=v1.2.0
+REPO_TAG=sandbox
 
 # Dependency tags/branches
-THEME_TAG='v3.4.0'
-FORMINATOR_RT_ADDON_TAG='v1.1.0'
-WP_CORE_VERSION='6.2.2'
-FORMINATOR_VERSION='1.24.1'
+THEME_TAG='v3.8.1'
+FORMINATOR_RT_ADDON_TAG='v1.2.0'
+WP_CORE_VERSION='6.4.2'
+FORMINATOR_VERSION='1.27'
 REDIRECTION_VERSION='5.3.10'
 OPENID_CONNECT_GENERIC_VERSION='3.9.1'
-WPMU_DEV_DASHBOARD_VERSION='4.11.18'
+WPMU_DEV_DASHBOARD_VERSION='4.11.22'
+SMTP_MAILER_VERSION='1.1.9'
 MYSQL_TAG=5.7
 ADMINER_TAG=4
 

@@ -5,6 +5,10 @@
  * Most auth work is handled by the openid-connect-generic plugin, but we need some customizations
  */
 class UcdlibAuth {
+
+  public $oidcIsActivated;
+  public $allowedClientRoles;
+
   public function __construct(){
     $this->oidcIsActivated = in_array('openid-connect-generic/openid-connect-generic.php', apply_filters('active_plugins', get_option('active_plugins')));
 

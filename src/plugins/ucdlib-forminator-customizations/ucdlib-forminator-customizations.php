@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: UC Davis Library Forminator Customizations
+ * Plugin Name: UC Davis Library Customizations
  * Description: Our customizations go here.
  * Author: UC Davis Library Online Strategy
  */
