@@ -18,7 +18,7 @@ APP_VERSION=v1.3.0.${BUILD_NUM}
 # Repository tags/branchs
 # Tags should always be used for production deployments
 # Branches can be used for development deployments
-REPO_TAG=sandbox
+REPO_TAG=v1.3.0
 
 # Dependency tags/branches
 THEME_TAG='v3.8.1'
