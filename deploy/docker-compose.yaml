@@ -1,7 +1,7 @@
 version: '3'
 services:
   wordpress:
-    image: gcr.io/digital-ucdavis-edu/itis-wp-rt-forms:v1.3.0
+    image: gcr.io/digital-ucdavis-edu/itis-wp-rt-forms:sandbox
     env_file:
       - .env
     ports:
@@ -33,7 +33,7 @@ services:
       - wp-logs-data:/var/log/wordpress
 
   backup:
-    image: gcr.io/digital-ucdavis-edu/itis-wp-rt-forms-utils:v1.3.0
+    image: gcr.io/digital-ucdavis-edu/itis-wp-rt-forms-utils:sandbox
     env_file:
       - .env
     environment:
@@ -50,7 +50,7 @@ services:
     command: "./backup/entrypoint.sh"
 
   init:
-    image: gcr.io/digital-ucdavis-edu/itis-wp-rt-forms-utils:v1.3.0
+    image: gcr.io/digital-ucdavis-edu/itis-wp-rt-forms-utils:sandbox
     env_file:
       - .env
     environment:

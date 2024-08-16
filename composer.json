@@ -3,7 +3,6 @@
   "description": "Wordpress Rt Forms",
   "type":"wordpress-theme",
   "license": "MIT",
-  "minimum-stability" : "dev",
   "authors": [
     {
       "email": "spelkey@ucdavis.edu",
@@ -17,7 +16,7 @@
     }
   ],
   "require": {
-    "timber/timber": "2.0.0"
+    "timber/timber": "2.1.0"
   },
   "config": {
     "allow-plugins": {
