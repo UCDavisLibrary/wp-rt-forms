@@ -1,6 +1,6 @@
 x-variables:
-  main-image: &main-image localhost/local-dev/wp-rt-forms:local-dev
-  utils-image: &utils-image localhost/local-dev/wp-rt-forms-utils:local-dev
+  main-image: &main-image us-west1-docker.pkg.dev/digital-ucdavis-edu/wordpress/wp-rt-forms:v1.5.0
+  utils-image: &utils-image us-west1-docker.pkg.dev/digital-ucdavis-edu/wordpress/wp-rt-forms-utils:v1.5.0
 
 services:
   wordpress:
@@ -9,17 +9,15 @@ services:
       - .env
     ports:
       - ${HOST_PORT:-3000}:80
+    restart: always
     environment:
+      SERVER_URL: ${SERVER_URL:-https://support.staff.library.ucdavis.edu}
       UCD_THEME_ENV: ${UCD_THEME_ENV:-prod}
       WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
       WORDPRESS_DB_DATABASE: ${DB_DATABASE:-wordpress}
-      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-wordpress}
       WORDPRESS_DB_USER: ${DB_USER:-wordpress}
-      WORDPRESS_DEBUG: ${WORDPRESS_DEBUG:-1}
-      WORDPRESS_DEBUG_DISPLAY: ${WORDPRESS_DEBUG_DISPLAY:-1}
-      WORDPRESS_DISABLE_FATAL_ERROR_HANDLER: ${WORDPRESS_DISABLE_FATAL_ERROR_HANDLER:-1}
       WORDPRESS_CONFIG_EXTRA: |
-        define( 'WP_ENVIRONMENT_TYPE', 'local' );
+        define('FORCE_SSL_ADMIN', true);
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-rt-forms-client}
       OIDC_ENDPOINT_LOGIN_URL: ${OIDC_ENDPOINT_LOGIN_URL:-https://auth.library.ucdavis.edu/realms/internal/protocol/openid-connect/auth}
       OIDC_ENDPOINT_USERINFO_URL: ${OIDC_ENDPOINT_USERINFO_URL:-}
@@ -39,32 +37,29 @@ services:
     volumes:
       - uploads-data:/usr/src/wordpress/wp-content/uploads
       - wp-logs-data:/var/log/wordpress
-      - ../../../../forminator-addon-rt:/usr/src/wordpress/wp-content/plugins/forminator-addon-rt
-      - ../../../src/plugins/ucdlib-forminator-customizations:/usr/src/wordpress/wp-content/plugins/ucdlib-forminator-customizations
 
   backup:
     image: *utils-image
+    restart: always
     env_file:
       - .env
     environment:
-      BACKUP_DATA_ENV: ${BACKUP_DATA_ENV:-localhost}
+      RUN_BACKUP: 'true'
+      BACKUP_DATA_ENV: ${BACKUP_DATA_ENV:-prod}
+      SERVER_URL: ${SERVER_URL:-https://support.staff.library.ucdavis.edu}
       GC_BUCKET_BACKUPS: ${GC_BUCKET_BACKUPS:-itis-backups/wp-rt-forms}
       BACKUP_FILE_NAME: ${BACKUP_FILE_NAME:-db.sql.gz}
       UPLOADS_FILE_NAME: ${UPLOADS_FILE_NAME:-uploads.tar.gz}
       WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
       WORDPRESS_DB_DATABASE: ${DB_DATABASE:-wordpress}
-      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-wordpress}
       WORDPRESS_DB_USER: ${DB_USER:-wordpress}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-wordpress}
     depends_on:
       - db
       - wordpress
     volumes:
       - uploads-data:/uploads
-      - ../../../utils/backup:/deploy-utils/backup
       - ../../secrets/writer-key.json:/etc/service-account.json
-    command: ./tail.sh
-    # command: "./backup/entrypoint.sh"
+    command: "./backup/entrypoint.sh"
 
   init:
     image: *utils-image
@@ -73,45 +68,35 @@ services:
     environment:
       RUN_INIT: "true"
       INIT_DATA_ENV: ${INIT_DATA_ENV:-prod}
-      SERVER_URL: http://localhost:${HOST_PORT:-3000}
+      SERVER_URL: ${SERVER_URL:-https://support.staff.library.ucdavis.edu}
       GC_BUCKET_BACKUPS: ${GC_BUCKET_BACKUPS:-itis-backups/wp-rt-forms}
       BACKUP_FILE_NAME: ${BACKUP_FILE_NAME:-db.sql.gz}
       UPLOADS_FILE_NAME: ${UPLOADS_FILE_NAME:-uploads.tar.gz}
       WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
       WORDPRESS_DB_DATABASE: ${DB_DATABASE:-wordpress}
-      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-wordpress}
       WORDPRESS_DB_USER: ${DB_USER:-wordpress}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-wordpress}
     depends_on:
       - db
       - wordpress
     volumes:
       - uploads-data:/uploads
-      - ../../../utils/init:/deploy-utils/init
-      - ../../../utils/wp-scripts:/deploy-utils/wp-scripts
       - ../../secrets/reader-key.json:/etc/service-account.json
     command: ./init/init.sh
 
   db:
     image: mysql:5.7
+    restart: always
     env_file:
       - .env
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-wordpress}
       MYSQL_DATABASE: ${DB_DATABASE:-wordpress}
       MYSQL_USER: ${DB_USER:-wordpress}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-wordpress}
     volumes:
       - db-data:/var/lib/mysql
     ulimits:
       nofile:
         soft: 262114
         hard: 262114
-
-  adminer:
-    image: adminer:4
-    ports:
-      - ${ADMINER_HOST_PORT:-8080}:8080
 
 volumes:
   db-data:
