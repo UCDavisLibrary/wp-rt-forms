@@ -1,19 +1,53 @@
 #! /bin/bash
 
 ###
-# download the env file from the secret manager
-# first arg is for the directory to download to relative to deploy directory
-# You will want to review the env file before using it, since it has values for both dev and prod
+# Downloads env from google cloud secret manager and places in specified deployment directory
+# Usage: ./cmds/get-env.sh [-f] <deployment-dir>
+# -f: force overwrite of existing .env file
+# deployment-dir: required. e.g. local-dev gets placed in compose/wp-rt-forms-local-dev/.env
 ###
 
 set -e
 CMDS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-cd $CMDS_DIR/..
-path=$1
-if [ -z "$path" ]; then
-  path=""
-elif [[ ! $path == */ ]]; then
-  path="${path}/"
+cd $CMDS_DIR
+
+FORCE_OVERWRITE=false
+
+while getopts ":f" opt; do
+  case ${opt} in
+    f )
+      FORCE_OVERWRITE=true
+      ;;
+    \? )
+      echo "Invalid option: -$OPTARG" 1>&2
+      exit 1
+      ;;
+  esac
+done
+shift $((OPTIND -1))
+
+DEPLOYMENT_DIR=$1
+
+if [ -z "$DEPLOYMENT_DIR" ]; then
+  echo "Deployment directory is required."
+  exit 1
 fi
 
-gcloud secrets versions access latest --secret=itis-wp-rt-forms-env > $path.env
+DEPLOYMENT_DIR="../compose/wp-rt-forms-$DEPLOYMENT_DIR"
+
+if [ ! -d "$DEPLOYMENT_DIR" ]; then
+  echo "Deployment directory does not exist: $DEPLOYMENT_DIR"
+  exit 1
+fi
+
+ENV_FILE="$DEPLOYMENT_DIR/.env"
+
+if [ -f "$ENV_FILE" ] && [ "$FORCE_OVERWRITE" = false ]; then
+  echo ".env file already exists. Use -f to force overwrite."
+  exit 1
+fi
+
+gcloud --project=digital-ucdavis-edu secrets versions access latest --secret=itis-wp-rt-forms-env > "$ENV_FILE"
+
+cd $DEPLOYMENT_DIR
+echo ".env file has been downloaded to $(pwd)"

@@ -1,5 +1,5 @@
-ARG APP_IMAGE_NAME_TAG
-FROM ${APP_IMAGE_NAME_TAG}
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 RUN apt-get update && apt-get install -y apt-transport-https ca-certificates gnupg curl cron procps
 

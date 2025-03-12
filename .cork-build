@@ -1,0 +1,22 @@
+{
+  "registry" : "us-west1-docker.pkg.dev/digital-ucdavis-edu/wordpress",
+
+  "images" : {
+    "wp-rt-forms" : {
+      "contextPath" : ".",
+      "options" : {
+        "secret" : [
+          "id=google_key,env=ITIS_BACKUP_READER_KEY"
+        ]
+      }
+    },
+    "wp-rt-forms-utils" : {
+      "contextPath" : "./utils",
+      "options" : {
+        "build-arg" : [
+          "BASE_IMAGE=${wp-rt-forms.wp-rt-forms}"
+        ]
+      }
+    }
+  }
+}

@@ -4,3 +4,4 @@ node_modules
 deploy/wp-rt-forms-local-dev
 reader-key.json
 writer-key.json
+secrets
